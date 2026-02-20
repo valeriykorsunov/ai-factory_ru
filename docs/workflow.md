@@ -1,26 +1,26 @@
-[← Getting Started](getting-started.md) · [Back to README](../README.md) · [Reflex Loop →](loop.md)
+[← Начало работы](getting-started.md) · [Назад к README](../README.md) · [Рефлексивный цикл →](loop.md)
 
-# Development Workflow
+# Рабочий процесс разработки
 
-AI Factory has two phases: **configuration** (one-time project setup) and the **development workflow** (repeatable loop of plan → implement → verify → commit → evolve).
+AI Factory работает в двух режимах: **конфигурация проекта** (одноразовая настройка) и **рабочий процесс разработки** (повторяющийся цикл: план → реализация → проверка → коммит → развитие).
 
-## Project Configuration
+## Конфигурация проекта
 
-Run once per project. Sets up context files that all workflow skills depend on.
+Выполняется один раз для каждого проекта. Создаёт файлы контекста, от которых зависят все навыки рабочего процесса.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                       PROJECT CONFIGURATION                             │
+│                       КОНФИГУРАЦИЯ ПРОЕКТА                               │
 └─────────────────────────────────────────────────────────────────────────┘
 
   ┌──────────────┐      ┌──────────────┐      ┌──────────────────────────┐
   │              │      │   claude     │      │                          │
-  │ ai-factory   │ ───▶ │ (or any AI   │ ───▶│      /aif                │
-  │    init      │      │    agent)    │      │   (setup context)        │
+  │ ai-factory   │ ───▶ │ (или другой  │ ───▶│      /aif                │
+  │    init      │      │    ИИ-агент) │      │   (настройка контекста)  │
   │              │      │              │      │                          │
   └──────────────┘      └──────────────┘      │  DESCRIPTION.md          │
                                               │  AGENTS.md               │
-                                              │  Skills + MCP configured │
+                                              │  Навыки + MCP настроены  │
                                               └────────────┬─────────────┘
                                                            │
                                                            ▼
@@ -34,64 +34,66 @@ Run once per project. Sets up context files that all workflow skills depend on.
                                          ▼                 ▼                 ▼
                                   ┌───────────────┐  ┌──────────────┐  ┌─────────────┐
                                   │ /aif-rules    │  │ /aif-roadmap │  │  /aif-docs  │
-                                  │ (optional)    │  │(recommended) │  │ (optional)  │
+                                  │ (опционально) │  │(рекомендуется)│  │ (опционально)│
                                   └───────────────┘  └──────────────┘  └─────────────┘
 
                                   ┌───────────────┐  ┌──────────────┐  ┌──────────────┐
                                   │ /aif-dockerize│  │  /aif-ci     │  │ /aif-build-  │
-                                  │ (optional)    │  │ (optional)   │  │  automation  │
-                                  └───────────────┘  └──────────────┘  │ (optional)   │
+                                  │ (опционально) │  │ (опционально)│  │  automation  │
+                                  └───────────────┘  └──────────────┘  │ (опционально)│
                                                                        └──────────────┘
 ```
 
-## Development Workflow
+## Рабочий процесс разработки
 
-The repeatable development loop. Each skill feeds into the next, sharing context through plan files and patches.
+Повторяющийся цикл разработки. Каждый навык передаёт контекст следующему через файлы планов и патчи.
 
 ![workflow](https://github.com/lee-to/ai-factory/raw/2.x/art/workflow.png)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                       DEVELOPMENT WORKFLOW                               │
+│                       РАБОЧИЙ ПРОЦЕСС РАЗРАБОТКИ                         │
 └─────────────────────────────────────────────────────────────────────────┘
 
                ┌──────────────────────────┐                         ┌──────────────┐
                │                          │                         │              │
                │    /aif-plan             │                         │ /aif-fix     │
                │                          │                         │              │
-               │  fast → no branch,       │                         │              │
-               │         PLAN.md          │                         │ Bug fixes    │
-               │  full → git branch,      │                         │ Optional plan│
-               │         plans/<br>.md    │                         │ With logging │
-               │                          │                         │              │
+               │  fast → без ветки,       │                         │              │
+               │         PLAN.md          │                         │ Исправление  │
+               │  full → git-ветка,       │                         │   багов      │
+               │         plans/<br>.md    │                         │ Опциональный │
+               │                          │                         │   план       │
+               │                          │                         │ С логированием│
                └────────────┬─────────────┘                         └───────┬──────┘
                             │                                               │
                             │                                               ▼
                             │                                      ┌──────────────────┐
                             │                                      │ .ai-factory/     │
                             │                                      │   patches/       │
-                            │                                      │ Self-improvement │
+                            │                                      │ Самоулучшение    │
                             └───────────┬──────────────────────────└────────┬─────────┘
                                         │                                   │
                                         ▼                                   │
                              ┌─────────────────────┐                        │
                              │                     │                        │
                              │ /aif-improve        │                        │
-                             │    (optional)       │                        │
+                             │    (опционально)    │                        │
                              │                     │                        │
-                             │ Refine plan with    │                        │
-                             │ deeper analysis     │                        │
+                             │ Уточнение плана     │                        │
+                             │ глубоким анализом   │                        │
                              │                     │                        │
                              └──────────┬──────────┘                        │
                                         │                                   │
                                         ▼                                   │
                              ┌──────────────────────┐                       │
-                             │                      │◀── reads patches ─────┘
+                             │                      │◀── читает патчи ──────┘
                              │ /aif-implement       │
-                             │ ──── error?          │
+                             │ ──── ошибка?         │
                              │  ──▶ /aif-fix       │
-                             │  Execute tasks       │
-                             │  Commit checkpoints  │
+                             │  Выполнение задач    │
+                             │  Контрольные точки   │
+                             │  для коммитов        │
                              │                      │
                              └──────────┬───────────┘
                                         │
@@ -99,9 +101,9 @@ The repeatable development loop. Each skill feeds into the next, sharing context
                              ┌──────────────────────────────────────┐
                              │                                      │
                              │ /aif-verify                          │
-                             │    (optional)                        │
+                             │    (опционально)                     │
                              │                                      │
-                             │ Check completeness                   │
+                             │ Проверка полноты                     │
                              │ Build / test / lint                  │
                              │    ↓                                 │
                              │ → /aif-security-checklist            │
@@ -119,70 +121,70 @@ The repeatable development loop. Each skill feeds into the next, sharing context
                         ┌───────────────┴───────────────┐
                         │                               │
                         ▼                               ▼
-                   More work?                        Done!
-                   Loop back ↑                          │
-                                                        ▼
+                   Ещё работа?                      Готово!
+                   Возврат в цикл ↑                     │
+                                                       ▼
                                              ┌─────────────────────┐
                                              │                     │
                                              │ /aif-evolve         │
                                              │                     │
-                                             │ Reads patches +     │
-                                             │ project context     │
+                                             │ Читает патчи +      │
+                                             │ контекст проекта    │
                                              │       ↓             │
-                                             │ Improves skills     │
+                                             │ Улучшает навыки     │
                                              │                     │
                                              └─────────────────────┘
 
 ```
 
-## When to Use What?
+## Какой навык выбрать?
 
-| Command | Use Case | Creates Branch? | Creates Plan? |
-|---------|----------|-----------------|---------------|
-| `/aif-roadmap` | Strategic planning, milestones, long-term vision | No | `.ai-factory/ROADMAP.md` |
-| `/aif-plan fast` | Small tasks, quick fixes, experiments | No | `.ai-factory/PLAN.md` |
-| `/aif-plan full` | Full features, stories, epics | Yes | `.ai-factory/plans/<branch>.md` |
-| `/aif-plan full --parallel` | Concurrent features via worktrees | Yes + worktree | Autonomous end-to-end |
-| `/aif-improve` | Refine plan before implementation | No | No (improves existing) |
-| `/aif-loop` | Iterative generation with quality gates and phase-based cycles | No | No (uses `.ai-factory/evolution/`) |
-| `/aif-fix` | Bug fixes, errors, hotfixes | No | Optional (`.ai-factory/FIX_PLAN.md`) |
-| `/aif-verify` | Post-implementation quality check | No | No (reads existing) |
+| Команда | Сценарий использования | Создаёт ветку? | Создаёт план? |
+|---------|------------------------|----------------|---------------|
+| `/aif-roadmap` | Стратегическое планирование, вехи, долгосрочное видение | Нет | `.ai-factory/ROADMAP.md` |
+| `/aif-plan fast` | Небольшие задачи, быстрые исправления, эксперименты | Нет | `.ai-factory/PLAN.md` |
+| `/aif-plan full` | Полноценные функции, истории, эпики | Да | `.ai-factory/plans/<branch>.md` |
+| `/aif-plan full --parallel` | Параллельная работа над несколькими функциями через worktrees | Да + worktree | Автономный end-to-end |
+| `/aif-improve` | Уточнение плана перед реализацией | Нет | Нет (улучшает существующий) |
+| `/aif-loop` | Итеративная генерация с контрольными точками качества и пофазовыми циклами | Нет | Нет (использует `.ai-factory/evolution/`) |
+| `/aif-fix` | Исправление багов, ошибок, хотфиксы | Нет | Опционально (`.ai-factory/FIX_PLAN.md`) |
+| `/aif-verify` | Проверка качества после реализации | Нет | Нет (читает существующий) |
 
-## Workflow Skills
+## Навыки рабочего процесса
 
-These skills form the development pipeline. Each one feeds into the next.
+Эти навыки образуют конвейер разработки. Каждый передаёт контекст следующему.
 
-### `/aif-roadmap [check | vision]` — strategic planning
-
-```
-/aif-roadmap                              # Create or update roadmap
-/aif-roadmap SaaS for project management  # Create from vision
-/aif-roadmap check                        # Auto-scan: find completed milestones
-```
-
-High-level project planning. Creates `.ai-factory/ROADMAP.md` — a strategic checklist of major milestones (not granular tasks). Use `check` to automatically scan the codebase and mark milestones that appear done. `/aif-implement` also checks the roadmap after completing all tasks.
-
-### `/aif-plan [fast|full] <description>` — plan the work
+### `/aif-roadmap [check | vision]` — стратегическое планирование
 
 ```
-/aif-plan Add user authentication with OAuth       # Asks which mode
-/aif-plan fast Add product search API              # Quick plan, no branch
-/aif-plan full Add user authentication with OAuth  # Git branch + full plan
-/aif-plan full --parallel Add Stripe checkout      # Parallel worktree
+/aif-roadmap                              # Создать или обновить дорожную карту
+/aif-roadmap SaaS for project management  # Создать из видения
+/aif-roadmap check                        # Автосканирование: найти завершённые вехи
 ```
 
-Two modes — **fast** (no branch, saves to `.ai-factory/PLAN.md`) and **full** (creates git branch, asks about testing/logging/docs, saves to `.ai-factory/plans/<branch>.md`). Analyzes requirements, explores codebase for patterns, creates tasks with dependencies. For 5+ tasks, includes commit checkpoints. For parallel work on multiple features, use `full --parallel` to create isolated worktrees.
+Высокоуровневое планирование проекта. Создаёт `.ai-factory/ROADMAP.md` — стратегический чек-лист крупных вех (не детальных задач). Используйте `check` для автоматического сканирования кодовой базы и отметки вех, которые выглядят завершёнными. `/aif-implement` также проверяет дорожную карту после завершения всех задач.
 
-### `/aif-improve [prompt]` — refine the plan
+### `/aif-plan [fast|full] <описание>` — планирование работы
+
+```
+/aif-plan Add user authentication with OAuth       # Спросит, какой режим
+/aif-plan fast Add product search API              # Быстрый план, без ветки
+/aif-plan full Add user authentication with OAuth  # Git-ветка + полный план
+/aif-plan full --parallel Add Stripe checkout      # Параллельный worktree
+```
+
+Два режима — **fast** (без ветки, сохраняет в `.ai-factory/PLAN.md`) и **full** (создаёт git-ветку, спрашивает о тестировании/логировании/документации, сохраняет в `.ai-factory/plans/<branch>.md`). Анализирует требования, исследует кодовую базу на наличие паттернов, создаёт задачи с зависимостями. Для 5+ задач включает контрольные точки для коммитов. Для параллельной работы над несколькими функциями используйте `full --parallel` для создания изолированных worktrees.
+
+### `/aif-improve [подсказка]` — уточнение плана
 
 ```
 /aif-improve
 /aif-improve add validation and error handling
 ```
 
-Second-pass analysis. Finds missing tasks (migrations, configs, middleware), fixes dependencies, removes redundant work. Shows a diff-like report before applying changes.
+Второй проход анализа. Находит пропущенные задачи (миграции, конфиги, middleware), исправляет зависимости, удаляет избыточную работу. Показывает отчёт в стиле diff перед применением изменений.
 
-### `/aif-loop [new|resume|status|stop|list|history|clean] [task or alias]` — iterative quality loop
+### `/aif-loop [new|resume|status|stop|list|history|clean] [задача или алиас]` — итеративный цикл качества
 
 ```
 /aif-loop new OpenAPI 3.1 + DDD notes + JSON examples + PHP controller
@@ -193,68 +195,68 @@ Second-pass analysis. Finds missing tasks (migrations, configs, middleware), fix
 /aif-loop clean courses-api-ddd
 ```
 
-Runs a strict Reflex Loop with 6 phases: PLAN -> PRODUCE||PREPARE -> EVALUATE -> CRITIQUE -> REFINE. PRODUCE and PREPARE run in parallel via `Task` tool; EVALUATE runs check groups in parallel. Before iteration 1, it always asks for explicit confirmation of success criteria and max iterations (even if both are already in task text). Keeps one active loop pointer in `.ai-factory/evolution/current.json` and per-task run state in `.ai-factory/evolution/<alias>/run.json` with append-only events in `history.jsonl` and latest output in `artifact.md`. Stops on threshold reached, no major issues, stagnation, or max iterations (default: 4). If loop stops on max iterations without passing criteria, final summary includes distance-to-success metrics (threshold gap + remaining blocking fail-rules). Use `list` to see all loop runs, `history` to view events, `clean` to remove old loop runs.
+Запускает строгий рефлексивный цикл с 6 фазами: PLAN -> PRODUCE||PREPARE -> EVALUATE -> CRITIQUE -> REFINE. PRODUCE и PREPARE выполняются параллельно через инструмент `Task`; EVALUATE запускает группы проверок параллельно. Перед первой итерацией всегда запрашивает явное подтверждение критериев успеха и максимального числа итераций (даже если они уже указаны в тексте задачи). Хранит один указатель на активный цикл в `.ai-factory/evolution/current.json` и состояние выполнения для каждой задачи в `.ai-factory/evolution/<alias>/run.json` с событиями только для добавления в `history.jsonl` и последним результатом в `artifact.md`. Останавливается при достижении порога, отсутствии серьёзных проблем, стагнации или достижении максимума итераций (по умолчанию: 4). Если цикл остановился на максимуме итераций без прохождения критериев, финальная сводка включает метрики дистанции до успеха (разрыв до порога + оставшиеся блокирующие правила провала). Используйте `list` для просмотра всех запусков цикла, `history` для просмотра событий, `clean` для удаления старых запусков.
 
-For full contracts and state transition rules, see [Reflex Loop](loop.md).
+Полные контракты и правила перехода состояний см. в [Рефлексивный цикл](loop.md).
 
-### `/aif-implement` — execute the plan
-
-```
-/aif-implement        # Continue from where you left off
-/aif-implement 5      # Start from task #5
-/aif-implement status # Check progress
-```
-
-Reads past patches from `.ai-factory/patches/` to learn from previous mistakes, then executes tasks one by one with commit checkpoints. If the plan has `Docs: yes`, runs `/aif-docs` after completion.
-
-### `/aif-verify [--strict]` — check completeness
+### `/aif-implement` — выполнение плана
 
 ```
-/aif-verify          # Verify implementation against plan
-/aif-verify --strict # Strict mode — zero tolerance for gaps
+/aif-implement        # Продолжить с места остановки
+/aif-implement 5      # Начать с задачи #5
+/aif-implement status # Проверить прогресс
 ```
 
-Optional step after `/aif-implement`. Goes through every task in the plan and verifies the code actually implements it. Checks build, tests, lint, looks for leftover TODOs, undocumented env vars, and plan-vs-code drift. If gaps are found, it first suggests `/aif-fix <issue summary>` (recommended). If verification is clean, it suggests `/aif-security-checklist` and `/aif-review`. Use `--strict` before merging to main.
+Читает прошлые патчи из `.ai-factory/patches/`, чтобы учиться на предыдущих ошибках, затем выполняет задачи одну за другой с контрольными точками для коммитов. Если в плане указано `Docs: yes`, запускает `/aif-docs` после завершения.
 
-### `/aif-fix [bug description]` — fix and learn
+### `/aif-verify [--strict]` — проверка полноты
+
+```
+/aif-verify          # Проверить реализацию на соответствие плану
+/aif-verify --strict # Строгий режим — нулевая терпимость к пропускам
+```
+
+Опциональный шаг после `/aif-implement`. Проходит по каждой задаче в плане и проверяет, что код действительно её реализует. Проверяет build, тесты, lint, ищет оставшиеся TODO, недокументированные переменные окружения и расхождения между планом и кодом. Если найдены пропуски, сначала предлагает `/aif-fix <краткое описание проблемы>` (рекомендуется). Если проверка прошла чисто, предлагает `/aif-security-checklist` и `/aif-review`. Используйте `--strict` перед слиянием в main.
+
+### `/aif-fix [описание бага]` — исправление и обучение
 
 ```
 /aif-fix TypeError: Cannot read property 'name' of undefined
 ```
 
-Two modes — choose when you invoke:
-- **Fix now** — investigates and fixes immediately with logging
-- **Plan first** — creates `.ai-factory/FIX_PLAN.md` with analysis and fix steps, then stops for review
+Два режима — выберите при вызове:
+- **Fix now** — исследует и исправляет немедленно с логированием
+- **Plan first** — создаёт `.ai-factory/FIX_PLAN.md` с анализом и шагами исправления, затем останавливается для просмотра
 
-When a plan exists, run without arguments to execute:
+Когда план существует, запустите без аргументов для выполнения:
 ```
-/aif-fix    # reads FIX_PLAN.md → applies fix → deletes plan
-```
-
-Every fix creates a **self-improvement patch** in `.ai-factory/patches/`. Every patch makes future `/aif-implement` and `/aif-fix` smarter.
-
-### `/aif-evolve` — improve skills from experience
-
-```
-/aif-evolve          # Evolve all skills
-/aif-evolve fix      # Evolve only the fix skill
+/aif-fix    # читает FIX_PLAN.md → применяет исправление → удаляет план
 ```
 
-Reads all accumulated patches, analyzes project patterns, and proposes targeted skill improvements. Closes the learning loop: **fix → patch → evolve → better skills → fewer bugs**.
+Каждое исправление создаёт **патч самоулучшения** в `.ai-factory/patches/`. Каждый патч делает будущие `/aif-implement` и `/aif-fix` умнее.
+
+### `/aif-evolve` — улучшение навыков на основе опыта
+
+```
+/aif-evolve          # Развить все навыки
+/aif-evolve fix      # Развить только навык fix
+```
+
+Читает все накопленные патчи, анализирует паттерны проекта и предлагает целевые улучшения навыков. Замыкает цикл обучения: **исправление → патч → развитие → лучшие навыки → меньше багов**.
 
 ---
 
-For full details on all skills including utility commands (`/aif-docs`, `/aif-dockerize`, `/aif-build-automation`, `/aif-ci`, `/aif-commit`, `/aif-skill-generator`, `/aif-security-checklist`), see [Core Skills](skills.md).
+Полные детали всех навыков, включая вспомогательные команды (`/aif-docs`, `/aif-dockerize`, `/aif-build-automation`, `/aif-ci`, `/aif-commit`, `/aif-skill-generator`, `/aif-security-checklist`), см. в [Основные навыки](skills.md).
 
-## Why Spec-Driven?
+## Почему спецификация — основа?
 
-- **Predictable results** - AI follows a plan, not random exploration
-- **Resumable sessions** - progress saved in plan files, continue anytime
-- **Commit discipline** - structured commits at logical checkpoints
-- **No scope creep** - AI does exactly what's in the plan, nothing more
+- **Предсказуемые результаты** — ИИ следует плану, а не случайному исследованию
+- **Возобновляемые сессии** — прогресс сохраняется в файлах планов, можно продолжить в любой момент
+- **Дисциплина коммитов** — структурированные коммиты в логических контрольных точках
+- **Без scope creep** — ИИ делает ровно то, что в плане, и ничего больше
 
-## See Also
+## См. также
 
-- [Reflex Loop](loop.md) — strict iterative loop contracts and state transitions
-- [Core Skills](skills.md) — detailed reference for all workflow and utility skills
-- [Plan Files](plan-files.md) — how plan artifacts are stored and managed
+- [Рефлексивный цикл](loop.md) — строгие контракты итеративного цикла и переходы состояний
+- [Основные навыки](skills.md) — подробный справочник по всем навыкам рабочего процесса и вспомогательным навыкам
+- [Файлы планов](plan-files.md) — как хранятся и управляются артефакты планов
